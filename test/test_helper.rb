@@ -2,7 +2,7 @@ require 'test/unit'
 require 'active_support/all'
 require 'policies'
 require 'policies_test'
-require 'policies/project_policy_test'
+require 'policies/project_policy'
 
 Project = Class.new
 
