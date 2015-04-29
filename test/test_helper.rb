@@ -1,4 +1,4 @@
-require 'test/unit'
+require 'minitest/autorun'
 require 'active_support/all'
 require 'policies'
 require 'policies_test'
@@ -6,7 +6,7 @@ require 'policies/project_policy'
 
 Project = Class.new
 
-Test::Unit::TestCase.class_eval do
+Minitest::Test.class_eval do
   include Policies::Methods
 end
 

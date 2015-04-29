@@ -1,4 +1,4 @@
-class ProjectPolicy < Policy
+class ProjectPolicy < Policies::Base
   def show?
     true
   end

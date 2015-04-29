@@ -1,21 +1,26 @@
 require 'test_helper'
 
-class PoliciesTest < Test::Unit::TestCase
+class PoliciesTest < Minitest::Test
   def setup
     @project = Project.new
   end
 
-  test 'symbol conversion' do
+  def test_symbol_conversion
     assert_equal authorized?(:show, :project), true
     assert_equal authorized?(:edit, :project), false
   end
 
-  test 'object conversion' do
+  def test_plural_symbol_conversion
+    assert_equal authorized?(:show, :projects), true
+    assert_equal authorized?(:edit, :projects), false
+  end
+
+  def test_object_conversion
     assert_equal authorized?(:show, @project), true
     assert_equal authorized?(:edit, @project), false
   end
 
-  test 'unauthorized error raised' do
+  def test_unauthorized_error_raised
     assert_raises Policies::UnauthorizedError do
       authorize(@project)
     end

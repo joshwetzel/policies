@@ -36,7 +36,7 @@ Policies makes a few logical assumptions for the ease of implementation.
   3. The names of policy classes must be a combination of an object's class suffixed with `Policy`. For example, a
      policy for projects should be named `ProjectPolicy`, and a policy for users should be named `UserPolicy`. It is
      recommended to place policies in an `app/policies` directory.
-  4. Policies should inherit from a predefined `Policy` class.
+  4. Policies should inherit from `Policies::Base`.
   5. Method names within a policy should be suffixed with a `?`.
 
 ## Getting Started
@@ -89,7 +89,7 @@ pick up the new directory.**
 
 ```ruby
 # app/policies/project_policy.rb
-class ProjectPolicy < Policy
+class ProjectPolicy < Policies::Base
 end
 ```
 
@@ -98,7 +98,7 @@ Let's assume we want to limit the edit and update actions to a project owner.
 
 ```ruby
 # app/policies/project_policy.rb
-class ProjectPolicy < Policy
+class ProjectPolicy < Policies::Base
   def edit?
     current_role.owner?
   end
@@ -110,7 +110,7 @@ An instance variable named after the object's class is also available for use wi
 
 ```ruby
 # app/policies/project_policy.rb
-class ProjectPolicy < Policy
+class ProjectPolicy < Policies::Base
   def destroy?
     @project.can_be_destroyed? && current_role.owner?
   end
@@ -121,7 +121,7 @@ Using a different example, a user may only be allowed to edit their own account.
 
 ```ruby
 # app/policies/user_policy.rb
-class UserPolicy < Policy
+class UserPolicy < Policies::Base
   def edit?
     current_user == @user
   end
