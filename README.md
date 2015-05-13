@@ -36,7 +36,7 @@ Policies makes a few logical assumptions for the ease of implementation.
 
     # On the user
     def current_role
-      current_user.role
+      @current_role ||= current_user.role
     end
     ```
   3. The names of policy classes must be a combination of an object's class suffixed with `Policy`. For example, a
