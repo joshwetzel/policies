@@ -21,16 +21,22 @@ Policies makes a few logical assumptions for the ease of implementation.
 
     ```ruby
     def current_user
-      @current_user ||= session[:user_id] && User.find(session[:user_id])
+      @current_user ||= User.find(session[:user_id]) if session[:user_id]
     end
     ```
   2. It requires a `current_role` method to be defined.
 
     ```ruby
+    # On an intermediary object, such as membership
     def current_role
       if @project.present? && @project.persisted?
         @current_role ||= @project.memberships.find_by(user: current_user).role
       end
+    end
+
+    # On the user
+    def current_role
+      current_user.role
     end
     ```
   3. The names of policy classes must be a combination of an object's class suffixed with `Policy`. For example, a
@@ -138,11 +144,11 @@ After the policy is written, views may be updated with the `authorized?` helper.
 <% end %>
 ```
 
-Controllers may be updated with the `authorize` method.
+Controllers may be updated with the `authorize` and `authorized?` methods.
 
 ```ruby
-# app/controllers/project_controller.rb
-class ProjectController < ApplicationController
+# app/controllers/projects_controller.rb
+class ProjectsController < ApplicationController
   def edit
     @project = current_user.projects.find(params[:id])
     authorize(@project)
@@ -164,8 +170,8 @@ end
 A better, more DRY approach may be using `authorize` in a `before_action`.
 
 ```ruby
-# app/controllers/project_controller.rb
-class ProjectController < ApplicationController
+# app/controllers/projects_controller.rb
+class ProjectsController < ApplicationController
   before_action :set_project, only: [:edit, :update]
 
   def update
@@ -187,7 +193,26 @@ end
 
 `authorize` will raise `Policies::UnauthorizedError` if the user is restricted from accessing the particular action.
 
+`authorized?` may be used when a boolean should be returned. If no action argument is passed, it will default to the
+current action.
+
+```ruby
+# app/controllers/projects_controller.rb
+class ProjectsController < ApplicationController
+  def edit
+    @project = Project.find(params[:id])
+
+    if authorized?(@project)
+      ...
+    else
+      redirect_to projects_path, error: translate('.unauthorized')
+    end
+  end
+end
+```
+
 In a situation where an instantiated object is not available, a symbol may be passed to `authorized?` and `authorize`.
+If no action argument is passed, it defaults to the current `action_name`.
 
 ```erb
 <% if authorized?(:index, :projects) %>
@@ -196,8 +221,8 @@ In a situation where an instantiated object is not available, a symbol may be pa
 ```
 
 ```ruby
-# app/controllers/project_controller.rb
-class ProjectController < ApplicationController
+# app/controllers/projects_controller.rb
+class ProjectsController < ApplicationController
   def index
     authorize(:projects)
     @projects = current_user.projects
