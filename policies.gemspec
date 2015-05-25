@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name    = 'policies'
-  s.version = '1.0.0-beta'
+  s.version = '1.0.0'
   s.files   = `git ls-files`.split($/)
   s.summary = 'Authorization control'
   s.author  = 'Josh Wetzel'
