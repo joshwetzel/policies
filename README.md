@@ -1,4 +1,6 @@
 # Policies
+[![Gem Version](https://badge.fury.io/rb/policies.svg)](http://badge.fury.io/rb/policies)
+
 Policies is an authorization control library for Ruby on Rails.
 
 It was primarily designed for use in applications where a user's authorization may change depending on a particular
